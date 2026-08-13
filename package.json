@@ -1,0 +1,26 @@
+{
+  "name": "tasks-practica",
+  "version": "1.0.0",
+  "description": "practica-task-schibilbain-valentina",
+  "main": "app.js",
+  "scripts": {
+    "dev": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiimaraaaa/practica-task-schibilbain-valentina.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/aiimaraaaa/practica-task-schibilbain-valentina/issues"
+  },
+  "homepage": "https://github.com/aiimaraaaa/practica-task-schibilbain-valentina#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.23.3",
+    "sequelize": "^6.37.8"
+  }
+}
