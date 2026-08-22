@@ -6,6 +6,8 @@ import { taskRouter } from "./src/routes/task.routes.js";
 import { UserModel } from "./src/models/user.model.js";
 import { TaskModel } from "./src/models/task.model.js";
 import { ProfileModel } from "./src/models/profile.model.js";
+import { TagModel } from "./src/models/tag.model.js";
+import { TaskTagModel } from "./src/models/tasktag.model.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +21,16 @@ UserModel.hasMany(TaskModel, { foreignKey: "userId", as: "tareas" });
 TaskModel.belongsTo(UserModel, { foreignKey: "userId", as: "usuario" });
 UserModel.hasOne(ProfileModel, { foreignKey: "userId", as: "perfil" });
 ProfileModel.belongsTo(UserModel, { foreignKey: "userId", as: "usuario" });
+TaskModel.belongsToMany(TagModel, {
+  through: TaskTagModel,
+  foreignKey: "taskId",
+  as: "etiquetas",
+});
+TagModel.belongsToMany(TaskModel, {
+  through: TaskTagModel,
+  foreignKey: "tagId",
+  as: "tareas",
+});
 
 app.listen(PORT, async () => {
   await startDB();
