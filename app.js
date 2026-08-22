@@ -5,6 +5,7 @@ import { taskRouter } from "./src/routes/task.routes.js";
 
 import { UserModel } from "./src/models/user.model.js";
 import { TaskModel } from "./src/models/task.model.js";
+import { ProfileModel } from "./src/models/profile.model.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,8 @@ app.use("/api", taskRouter);
 
 UserModel.hasMany(TaskModel, { foreignKey: "userId", as: "tareas" });
 TaskModel.belongsTo(UserModel, { foreignKey: "userId", as: "usuario" });
+UserModel.hasOne(ProfileModel, { foreignKey: "userId", as: "perfil" });
+ProfileModel.belongsTo(UserModel, { foreignKey: "userId", as: "usuario" });
 
 app.listen(PORT, async () => {
   await startDB();
