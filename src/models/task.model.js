@@ -22,6 +22,7 @@ export const TaskModel = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    // nuevo cammpo
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
