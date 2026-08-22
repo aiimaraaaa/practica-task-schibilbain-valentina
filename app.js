@@ -2,6 +2,8 @@ import express from "express";
 import { startDB } from "./src/config/database.js";
 import { userRouter } from "./src/routes/user.routes.js";
 import { taskRouter } from "./src/routes/task.routes.js";
+import { profileRouter } from "./src/routes/profile.routes.js";
+import { tagRouter } from "./src/routes/tag.routes.js";
 
 import { UserModel } from "./src/models/user.model.js";
 import { TaskModel } from "./src/models/task.model.js";
@@ -16,6 +18,8 @@ app.use(express.json());
 
 app.use("/api", userRouter);
 app.use("/api", taskRouter);
+app.use("/api", profileRouter);
+app.use("/api", tagRouter);
 
 UserModel.hasMany(TaskModel, { foreignKey: "userId", as: "tareas" });
 TaskModel.belongsTo(UserModel, { foreignKey: "userId", as: "usuario" });
