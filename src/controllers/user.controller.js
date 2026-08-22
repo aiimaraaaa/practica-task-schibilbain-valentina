@@ -1,4 +1,5 @@
 import { UserModel } from "../models/user.model.js";
+import { TaskModel } from "../models/task.model.js";
 
 export const crearUser = async (req, res) => {
   try {
@@ -27,6 +28,13 @@ export const getAllUsers = async (req, res) => {
   try {
     const users = await UserModel.findAll({
       attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: TaskModel,
+          as: "tareas",
+          attributes: ["id", "title", "description", "isComplete"],
+        },
+      ],
     });
     return res.status(200).json(users);
   } catch (error) {
@@ -40,6 +48,13 @@ export const getUserById = async (req, res) => {
     const { id } = req.params;
     const user = await UserModel.findByPk(id, {
       attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: TaskModel,
+          as: "tareas",
+          attributes: ["id", "title", "description", "isComplete"],
+        },
+      ],
     });
 
     if (!user) {
