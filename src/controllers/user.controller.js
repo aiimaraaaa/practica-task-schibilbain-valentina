@@ -1,23 +1,19 @@
+import { matchedData } from "express-validator";
 import { UserModel } from "../models/user.model.js";
 import { TaskModel } from "../models/task.model.js";
 
-export const crearUser = async (req, res) => {
+export const createUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Todos los campos son obligatorios" });
-    }
-
-    const existingUser = await UserModel.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ message: "El email ya está registrado" });
-    }
-
-    const usuario = await UserModel.create({ name, email, password });
-    return res.status(201).json({ message: "Usuario creado", usuario });
+    const validatedData = matchedData(req);
+    const user = await UserModel.create(validatedData);
+    return res.status(201).json({
+      message: "Usuario creado exitosamente",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error interno del servidor" });
@@ -56,7 +52,6 @@ export const getUserById = async (req, res) => {
         },
       ],
     });
-
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -70,22 +65,22 @@ export const getUserById = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, password } = req.body;
+    const validatedData = matchedData(req);
 
     const user = await UserModel.findByPk(id);
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    if (email && email !== user.email) {
-      const existingUser = await UserModel.findOne({ where: { email } });
-      if (existingUser) {
-        return res.status(400).json({ message: "El email ya está en uso" });
-      }
-    }
-
-    await user.update({ name, email, password });
-    return res.status(200).json({ message: "Usuario actualizado", user });
+    await user.update(validatedData);
+    return res.status(200).json({
+      message: "Usuario actualizado exitosamente",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error interno del servidor" });
@@ -96,13 +91,11 @@ export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await UserModel.findByPk(id);
-
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-
     await user.destroy();
-    return res.status(200).json({ message: "Usuario eliminado" });
+    return res.status(200).json({ message: "Usuario eliminado exitosamente" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error interno del servidor" });
