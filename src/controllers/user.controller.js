@@ -64,21 +64,23 @@ export const getUserById = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const validatedData = matchedData(req);
+    const validatedDataBody = matchedData(req, { locations: ["body"] });
+    const { id } = matchedData(req, { locations: ["params"] });
 
-    const user = await UserModel.findByPk(id);
-    if (!user) {
+    const userExist = await UserModel.findByPk(id);
+
+    if (!userExist) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    await user.update(validatedData);
+    await userExist.update(validatedDataBody);
+
     return res.status(200).json({
       message: "Usuario actualizado exitosamente",
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
+        id: userExist.id,
+        name: userExist.name,
+        email: userExist.email,
       },
     });
   } catch (error) {
@@ -90,11 +92,15 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await UserModel.findByPk(id);
-    if (!user) {
+
+    const userExist = await UserModel.findByPk(id);
+
+    if (!userExist) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    await user.destroy();
+
+    await userExist.destroy();
+
     return res.status(200).json({ message: "Usuario eliminado exitosamente" });
   } catch (error) {
     console.log(error);
