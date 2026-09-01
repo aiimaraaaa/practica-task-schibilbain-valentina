@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { TaskModel } from "../../models/task.model.js";
 import { UserModel } from "../../models/user.model.js";
 
@@ -42,6 +42,17 @@ export const createTaskValidation = [
 ];
 
 export const updateTaskValidation = [
+  param("id")
+    .isInt({ min: 1 })
+    .withMessage("El ID debe ser un número entero positivo")
+    .custom(async (id) => {
+      const task = await TaskModel.findByPk(id);
+      if (!task) {
+        throw new Error("Tarea no encontrada");
+      }
+      return true;
+    }),
+
   body("title")
     .optional()
     .notEmpty()
@@ -76,19 +87,6 @@ export const updateTaskValidation = [
       const user = await UserModel.findByPk(userId);
       if (!user) {
         throw new Error("Usuario no encontrado");
-      }
-      return true;
-    }),
-];
-
-export const idTaskValidation = [
-  body("id")
-    .isInt({ min: 1 })
-    .withMessage("El ID debe ser un número entero positivo")
-    .custom(async (id) => {
-      const task = await TaskModel.findByPk(id);
-      if (!task) {
-        throw new Error("Tarea no encontrada");
       }
       return true;
     }),
