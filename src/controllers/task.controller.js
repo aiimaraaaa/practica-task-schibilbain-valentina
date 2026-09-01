@@ -58,18 +58,20 @@ export const getTaskById = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   try {
-    const { id } = req.params;
-    const validatedData = matchedData(req);
+    const validatedDataBody = matchedData(req, { locations: ["body"] });
+    const { id } = matchedData(req, { locations: ["params"] });
 
-    const task = await TaskModel.findByPk(id);
-    if (!task) {
+    const taskExist = await TaskModel.findByPk(id);
+
+    if (!taskExist) {
       return res.status(404).json({ message: "Tarea no encontrada" });
     }
 
-    await task.update(validatedData);
+    await taskExist.update(validatedDataBody);
+
     return res.status(200).json({
       message: "Tarea actualizada exitosamente",
-      task,
+      task: taskExist,
     });
   } catch (error) {
     console.log(error);
@@ -80,11 +82,15 @@ export const updateTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const task = await TaskModel.findByPk(id);
-    if (!task) {
+
+    const taskExist = await TaskModel.findByPk(id);
+
+    if (!taskExist) {
       return res.status(404).json({ message: "Tarea no encontrada" });
     }
-    await task.destroy();
+
+    await taskExist.destroy();
+
     return res.status(200).json({ message: "Tarea eliminada exitosamente" });
   } catch (error) {
     console.log(error);
