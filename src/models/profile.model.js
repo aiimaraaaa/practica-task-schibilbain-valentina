@@ -28,6 +28,7 @@ export const ProfileModel = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
+    paranoid: true,
   },
 );
