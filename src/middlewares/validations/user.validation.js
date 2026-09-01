@@ -1,6 +1,5 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { UserModel } from "../../models/user.model.js";
-import { TaskModel } from "../../models/task.model.js";
 
 export const createUserValidation = [
   body("name")
@@ -32,6 +31,17 @@ export const createUserValidation = [
 ];
 
 export const updateUserValidation = [
+  param("id")
+    .isInt({ min: 1 })
+    .withMessage("El ID debe ser un número entero positivo")
+    .custom(async (id) => {
+      const user = await UserModel.findByPk(id);
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+      return true;
+    }),
+
   body("name")
     .optional()
     .notEmpty()
@@ -57,17 +67,4 @@ export const updateUserValidation = [
     .optional()
     .isLength({ min: 6, max: 100 })
     .withMessage("La contraseña debe tener entre 6 y 100 caracteres"),
-];
-
-export const idUserValidation = [
-  body("id")
-    .isInt({ min: 1 })
-    .withMessage("El ID debe ser un número entero positivo")
-    .custom(async (id) => {
-      const user = await UserModel.findByPk(id);
-      if (!user) {
-        throw new Error("Usuario no encontrado");
-      }
-      return true;
-    }),
 ];
