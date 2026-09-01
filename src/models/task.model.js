@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
+import { UserModel } from "./user.model.js";
 
 export const TaskModel = sequelize.define(
   "Task",
@@ -22,7 +23,6 @@ export const TaskModel = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    // nuevo cammpo
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -33,6 +33,11 @@ export const TaskModel = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
+    paranoid: true,
   },
 );
+
+// Relaciones
+TaskModel.belongsTo(UserModel, { foreignKey: "userId", as: "usuario" });
+UserModel.hasMany(TaskModel, { foreignKey: "userId", as: "tareas" });
